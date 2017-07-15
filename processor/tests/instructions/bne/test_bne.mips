@@ -1,0 +1,14 @@
+    addi    $s0, $zero, 1
+    addi    $s1, $zero, 2
+    addi    $t0, $zero, 0
+    addi    $t1, $zero, 0
+
+    addi    $t2, $zero, 0  # counter
+    addi    $t3, $zero, 5  # number of cycles
+
+loop:
+    add     $t0, $t0, $s0
+    add     $t1, $t1, $s1
+    addi    $t2, $t2, 1     # increment counter
+    bne     $t2, $t3, loop
+

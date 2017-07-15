@@ -1,0 +1,41 @@
+# Puts a few patterns in memory next to each other
+
+            addi    $a1, $zero, 0xde
+            sll     $a1, $a1, 8
+            addi    $a1, $a1, 0xad        # a1 = 0x0000dead
+            sll     $t0, $a1, 16          # t0 = 0xdead0000
+            addi    $a1, $zero, 0xbe
+            sll     $a1, $a1, 8
+            addi    $a1, $a1, 0xef        # a1 = 0x0000beef
+            or      $a1, $a1, $t0         # a1 = 0xdeadbeef
+
+            addi    $a0, $zero, 8
+            addi    $a2, $zero, 4
+            jal     memset                # memset(8, 0xdeadbeef, 4)
+
+            add     $a0, $zero, $v0
+            addi    $a1, $zero, 0
+            addi    $a2, $zero, 1
+            jal     memset                # memset(next, 0x00000000, 1)
+
+            add     $a0, $zero, $v0
+            addi    $a1, $zero, 0x7fff
+            addi    $a2, $zero, 4
+            jal     memset                # memset(next, 0x00007fff, 4)
+
+# ================================================================
+# a0 - starting address
+# a1 - value to put in memory
+# a2 - how many words
+# v0 - address stopped at
+memset:
+            addi    $t0, $zero, 0
+
+ms_loop:    sw      $a1, 0($a0)
+            addi    $a0, $a0, 4
+            addi    $t0, $t0, 1
+            bne     $t0, $a2, ms_loop
+
+            add     $v0, $a0, $zero
+            jr      $ra
+

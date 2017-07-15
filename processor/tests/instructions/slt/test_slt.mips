@@ -1,0 +1,9 @@
+addi    $s0, $zero, 10
+addi    $s1, $zero, 374
+addi    $s2, $zero, -34
+
+slt     $t0, $s0, $s1  # should be 1
+slt     $t1, $s1, $s0  # should be 0
+slt     $t2, $s1, $s2  # should be 0
+slt     $t3, $s0, $s2  # should be 0
+slt     $t4, $s2, $s1  # should be 1

@@ -1,0 +1,4 @@
+addi    $s0, $zero, 0
+addi    $s1, $zero, 3
+addi    $t0, $s0, 255
+addi    $t1, $s1, -6

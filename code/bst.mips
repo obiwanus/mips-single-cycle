@@ -1,0 +1,448 @@
+.eqv	INT_MIN	0x80000000
+.eqv	NULL	0
+
+.data
+invalid_tree:	.asciiz	"The tree is invalid\n"
+valid_tree:	.asciiz "The tree is valid\n"
+space:		.asciiz	" "
+newline:		.asciiz	"\n"
+min_is:		.asciiz	"The minimum is "
+max_is:		.asciiz	"The maximum is "
+
+.text
+
+		jal	build		# v0 = root node
+		
+		move	$s0, $v0	# save root node
+		
+		move 	$a0, $s0
+		jal	check		# v0 = is tree valid
+		
+		beqz	$v0, print_invalid
+		la	$a0, valid_tree
+		li	$v0, 4		# print string
+		syscall	
+		j	step2
+print_invalid:	la	$a0, invalid_tree
+		li	$v0, 4		# print string
+		syscall
+		
+step2:		li	$v0, 9		# sbrk
+		li	$a0, 400	# allocate space for 100 words
+		syscall			# v0 will contain the address of the allocated memory
+		move	$s1, $v0	# save reference
+		
+		move	$a0, $s0
+		move	$a1, $s1
+		jal	sort2list	# v0 = sort2list(root, o_list)
+		move	$s3, $v0	# s3 = nodes_sorted
+		
+		li	$s2, 0		# s2 is i
+print_list:		lw	$a0, 0($s1)
+		li	$v0, 1		# print integer
+		syscall
+		la	$a0, space
+		li	$v0, 4		# print string
+		syscall
+		add	$s2, $s2, 1	# i++
+		add	$s1, $s1, 4	# o_list++
+		bne	$s2, $s3, print_list
+		
+		li	$v0, 4
+		la	$a0, newline
+		syscall	
+		
+		# Print minimum
+		
+		li	$v0, 4		# print string
+		la	$a0, min_is
+		syscall			# print ("the minimum is")
+		
+		move	$a0, $s0	
+		jal	min		# v0 = min(root)
+		move	$a0, $v0
+		li	$v0, 1		# print int
+		syscall
+
+		li	$v0, 4
+		la	$a0, newline
+		syscall	
+		
+		# Print maximum
+		
+		li	$v0, 4		# print string
+		la	$a0, max_is
+		syscall			# print ("the maximum is")
+		
+		move	$a0, $s0	
+		jal	max		# v0 = min(root)
+		move	$a0, $v0
+		li	$v0, 1		# print int
+		syscall
+
+		li	$v0, 4
+		la	$a0, newline
+		syscall		
+		
+		li	$v0, 4
+		la	$a0, newline
+		syscall	
+		
+		# Try to find some values
+		
+		li	$a0, 1
+		move	$a1, $s0
+		jal	try_to_find
+		
+		li	$a0, -3
+		move	$a1, $s0
+		jal	try_to_find
+		
+		li	$a0, 2
+		move	$a1, $s0
+		jal	try_to_find
+		
+		li	$a0, -10
+		move	$a1, $s0
+		jal	try_to_find
+		
+		
+program_end:	li	$v0, 10
+		syscall
+		
+	
+	
+#################################################################################
+# new_node: Create a new tree node
+# $a0: node data to init
+# $a1: address of the parent node (may be NULL)
+# $v0: address of the allocated node
+.text
+new_node:	move	$t0, $a0	# save node data into $t0
+		
+		li	$v0, 9		# sbrk
+		li	$a0, 16		# allocate space for 4 words
+		syscall			# $v0 will contain the address of the allocated memory
+		
+		sw	$t0, 0($v0)	# node->data = data
+		sw	$zero, 4($v0)	# node->left = NULL
+		sw	$zero, 8($v0)	# node->right = NULL
+		sw	$a1, 12($v0)	# node->parent = parent
+		
+		jr	$ra		# v0 will still contain the address we're supposed to return
+#################################################################################
+
+
+#################################################################################
+# insert
+# $a0: address of node
+# $a1: data to insert
+# returns nothing
+.text
+insert:		sub	$sp, $sp, 16	# space for 4 vars on stack
+		sw	$ra, 0($sp)	# save return address
+		sw	$s0, 4($sp)	# save saved registers
+		sw	$s1, 8($sp)
+		sw	$s2, 12($sp)
+		
+		move	$s0, $a0	# s0 = address of node
+		move	$s1, $a1	# s1 = data
+		lw	$s2, 0($s0)	# s2 = node->data
+		
+		bgt	$s2, $s1, insert_left	# node->data > data ?
+		lw	$t0, 8($s0)	# t0 = node->right
+		bnez	$t0, insert_right_rec
+		move	$a0, $s1	# a0 = data
+		move	$a1, $s0	# a1 = node 
+		jal	new_node	# v0 = new_node(data, node)
+		sw	$v0, 8($s0)	# node->right = v0
+		j	insert_end
+insert_right_rec:	move	$a0, $t0	# a0 = node->right
+		move	$a1, $s1	# a1 = data
+		jal	insert		# insert(node->right, data)
+		j	insert_end
+insert_left:	lw	$t0, 4($s0)	# t0 = node->left
+		bnez	$t0, insert_left_rec
+		move	$a0, $s1	# a0 = data
+		move	$a1, $s0	# a1 = node 
+		jal	new_node	# v0 = new_node(data, node)		
+		sw	$v0, 4($s0)	# node->left = v0
+		j insert_end
+insert_left_rec:	move	$a0, $t0	# a0 = node->left
+		move	$a1, $s1	# a1 = data
+		jal	insert		# insert(node->left, data)		
+
+insert_end:	lw	$s2, 12($sp)	# restore saved registers
+		lw	$s1, 8($sp)		
+		lw	$s0, 4($sp)
+		lw	$ra, 0($sp)	# restore return address
+		add	$sp, $sp, 16	# pop everything from stack frame		
+		jr	$ra		
+#################################################################################
+
+
+#################################################################################
+# check: Checks if tree is a valid BST
+# $a0: root node address
+# $v0: 1 if valid, 0 otherwise
+.text
+check:	
+		sub	$sp, $sp, 20
+		sw	$ra, 0($sp)
+		sw	$s0, 4($sp)
+		sw	$s1, 8($sp)
+		sw	$s7, 12($sp)
+		sw	$s6, 16($sp)
+		
+		move	$s0, $a0	# save root node address
+		
+		lw	$s1, 4($s0)	# s1 = node->left
+		lw	$s2, 8($s0)	# s2 = node->right
+		
+		seq	$s7, $s1, 0	# s7 = (node->left == NULL)
+		bnez	$s7, check_right
+check_left:	lw	$t0, 0($s1)	# to = node->left->data
+		lw	$t1, 0($s0)	# t1 = node->data
+		slt	$s7, $t0, $t1	# s7 = node->left->data < node->data
+		beqz	$s7, check_end	# invalid
+		move	$a0, $s1
+		jal	check		# v0 = check left subtree
+		move	$s7, $v0
+		beqz	$s7, check_end	# immediate failure, or proceed to check right
+		
+check_right:	seq	$s6, $s2, 0	# s6 = (node->right == NULL)
+		bnez	$s6, check_end
+		lw	$t0, 0($s2)	# t0 = node->right->data
+		lw	$t1, 0($s0)	# t1 = node->data
+		sge	$s6, $t0, $t1	# s6 = node->right->data >= node->data
+		beqz	$s6, check_end	# immediate failure
+		move	$a0, $s2
+		jal 	check		# v0 = check right subtree
+		move	$s6, $v0
+		
+check_end:	and	$v0, $s7, $s6	# store result in v0
+	
+		lw	$s7, 12($sp)
+		lw	$s6, 16($sp)
+		lw	$s1, 8($sp)
+		lw	$s0, 4($sp)
+		lw	$ra, 0($sp)
+		add	$sp, $sp, 20
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# build: Builds a BST given an array of integers terminated by INT_MIN
+# $a0: address of array
+# $v0: address of the root node of the new BST
+.data
+source:		.word	1, 6, 7, 4, 3, 6, 8, 2, 9, 12, -3, 4, 54, 35, 5, INT_MIN
+.text
+build:		sub	$sp, $sp, 12
+		sw	$ra, 0($sp)
+		sw	$s0, 4($sp)
+		sw	$s1, 8($sp)
+		
+		lw	$a0, source		# a0 = first element of source
+		move	$a1, $zero
+		jal	new_node		# v0 = new_node(source[0], NULL)
+		
+		move	$s0, $v0		# s0 = address of root node
+			
+		li	$s2, 0			# i is s2
+build_loop:	add	$s2, $s2, 4		# i++
+		lw	$t1, source($s2)	# t1 = source[s2]
+		beq	$t1, INT_MIN, build_endloop
+		
+		move	$a0, $s0
+		move	$a1, $t1
+		jal	insert			# insert(node, source[i])
+		
+		j	build_loop	
+		
+build_endloop:	move	$v0, $s0		# return root node
+		
+		lw	$s1, 8($sp)
+		lw	$s0, 4($sp)
+		lw	$ra, 0($sp)
+		add	$sp, $sp, 12
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# sort2list: Flattens a BST into a sorted list
+# $a0: root node of the BST
+# $a1: address of the list to fill in
+# $v0: the number of items put into the list
+.text
+sort2list:		sub	$sp, $sp, 16
+		sw	$ra, 0($sp)
+		sw	$s0, 4($sp)
+		sw	$s1, 8($sp)
+		sw	$s2, 12($sp)
+		
+		move	$s0, $zero		# nodes_sorted = 0
+		move	$s1, $a1		# save pointer to list
+		move	$s2, $a0		# save pointer to root node
+
+		lw	$t0, 4($s2)		# t0 = node->left
+		beqz	$t0, sort2list_insert	# if (node->left != NULL)
+		move	$a0, $t0
+		move	$a1, $s1
+		jal	sort2list		# nodes_sorted = sort2list(node->left, o_list)
+		move	$s0, $v0
+		mul	$t0, $s0, 4		
+		add	$s1, $s1, $t0		# o_list += nodes_sorted
+		
+sort2list_insert:	lw	$t0, 0($s2)		# t0 = node->data
+		sw	$t0, 0($s1)		# *o_list = node->data
+		add	$s1, $s1, 4		# o_list++
+		add	$s0, $s0, 1		# nodes_sorted++
+		
+		lw	$t0, 8($s2)
+		beqz	$t0, sort2list_end	# if (node->right != NULL)
+		move	$a0, $t0
+		move	$a1, $s1
+		jal	sort2list		# v0 = sort2list(node->right, o_list)
+		add	$s0, $s0, $v0		# nodes_sorted += v0				
+		
+sort2list_end:	move	$v0, $s0		# return nodes_sorted
+
+		lw	$s2, 12($sp)
+		lw	$s1, 8($sp)
+		lw	$s0, 4($sp)
+		lw	$ra, 0($sp)
+		add	$sp, $sp, 16
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# min: finds the minimum value of a BST
+# $a0: root node
+# $v0: minimum value
+.text
+min:		sub	$sp, $sp, 4
+		sw	$ra, 0($sp)
+		
+		lw	$t0, 4($a0)		# t0 = node->left
+		bnez	$t0, min_rec
+		lw	$v0, 0($a0)		# return node->data
+		j	min_ret
+min_rec:		move	$a0, $t0
+		jal	min			# return min(node->left)		
+	
+min_ret:		lw	$ra, 0($sp)
+		add	$sp, $sp, 4
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# max: finds the maximum value of a BST
+# $a0: root node
+# $v0: maximum value
+.text
+max:		sub	$sp, $sp, 4
+		sw	$ra, 0($sp)
+		
+		lw	$t0, 8($a0)		# t0 = node->right
+		bnez	$t0, max_rec
+		lw	$v0, 0($a0)		# return node->data
+		j	max_ret
+max_rec:		move	$a0, $t0
+		jal	max			# return max(node->right)		
+	
+max_ret:		lw	$ra, 0($sp)
+		add	$sp, $sp, 4
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# try_to_find: tries to find a value in a BST, then prints result
+# $a0: value
+# $a1: root node
+.data
+trying:		.asciiz	"Trying to find "
+found:		.asciiz	"Found at "
+not_found:	.asciiz	"Not found\n"
+.text
+try_to_find:	sub	$sp, $sp, 12
+		sw	$ra, 0($sp)
+		sw	$s0, 4($sp)
+		sw	$s1, 8($sp)
+		
+		move	$s0, $a0
+		move	$s1, $a1
+		
+		li	$v0, 4
+		la	$a0, trying
+		syscall
+		
+		li	$v0, 1
+		move	$a0, $s0
+		syscall
+		
+		li	$v0, 4
+		la	$a0, newline
+		syscall		
+		
+		move	$a0, $s0
+		move	$a1, $s1
+		jal	find
+		
+		beqz	$v0, try_to_find_failed
+		move	$s0, $v0
+		li	$v0, 4
+		la	$a0, found
+		syscall
+		li	$v0, 34		# print hex
+		move	$a0, $s0
+		syscall
+		j	try_to_find_end
+		
+try_to_find_failed:	li	$v0, 4
+		la	$a0, not_found
+		syscall
+		
+try_to_find_end:	li	$v0, 4
+		la	$a0, newline
+		syscall
+	
+		lw	$s1, 8($sp)
+		lw	$s0, 4($sp)
+		lw	$ra, 0($sp)
+		add	$sp, $sp, 12
+		jr	$ra
+#################################################################################
+
+
+#################################################################################
+# find: searches for a value in a BST
+# $a0: value
+# $a1: root node
+# $v0: 0 if not found, address of node if found
+.text
+find:		sub	$sp, $sp, 4
+		sw	$ra, 0($sp)
+		
+		lw	$t0, 0($a1)		# t0 = node->data
+		move	$v0, $a1
+		beq	$t0, $a0, find_end	# if (value == node->data) return node
+		
+		bgt	$a0, $t0, find_right
+find_left:		lw	$t1, 4($a1)		# t1 = node->left
+		j	find_subtree
+find_right:	lw	$t1, 8($a1)		# t1 = node->right
+find_subtree:	li	$v0, 0
+		beqz	$t1, find_end		# if (node->left/right == NULL) return 0
+		move	$a1, $t1
+		jal	find			# return find(node->left/right, value)
+	
+find_end:		lw	$ra, 0($sp)
+		add	$sp, $sp, 4
+		jr	$ra
+#################################################################################

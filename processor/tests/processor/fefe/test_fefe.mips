@@ -1,0 +1,17 @@
+# Puts 0xFEFE in the first 64 bytes in memory
+
+        # s0 = 0xFEFEFEFE
+        addi    $t0, $zero, 0xFEFE
+        sll     $t0, $t0, 16
+        srl     $t0, $t0, 16        # clear the sign-extended 1111... on the left
+        add     $s0, $zero, $t0     # s0 = 0x0000FEFE
+        sll     $t0, $t0, 16        # t0 = 0xFEFE0000
+        or      $s0, $s0, $t0       # s0 = 0xFEFEFEFE
+
+        add     $t0, $zero, $zero   # t0 = 0
+        addi    $s1, $zero, 64      # s1 = 64
+
+loop:   sw      $s0, 0($t0)         # store FEFEFEFE
+        addi    $t0, $t0, 4
+        slt     $t1, $t0, $s1
+        bne     $t1, $zero, loop

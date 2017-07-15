@@ -1,0 +1,10 @@
+addi    $s0, $zero, 0xF0
+addi    $s1, $zero, 0x0F
+addi    $s2, $zero, 0xCC
+addi    $s3, $zero, 0xFFFFABCE
+
+ori     $t0, $s0, 0xFF  # should be FF
+ori     $t1, $s0, 0xC0  # should be F0
+ori     $t2, $s1, 0xCC  # should be CF
+ori     $t3, $s2, 0x34  # should be FC
+ori     $t4, $s3, 0xFFF3  # should be FFFFFFFF

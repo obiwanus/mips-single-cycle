@@ -1,0 +1,6 @@
+addi    $s0, $zero, 189
+addi    $s1, $zero, -28
+add     $t0, $s0, $s1
+add     $t1, $s1, $t0
+add     $t2, $s1, $s1
+add     $t3, $t1, $t2

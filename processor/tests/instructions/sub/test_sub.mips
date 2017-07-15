@@ -1,0 +1,7 @@
+addi    $s0, $zero, 189
+addi    $s1, $zero, -28
+
+sub     $t0, $s0, $s1  # should be 217
+sub     $t1, $s1, $t0  # should be -245
+sub     $t2, $s1, $s1  # should be 0
+sub     $t3, $t1, $t2  # should be -245

@@ -1,0 +1,10 @@
+addi    $s0, $zero, 0xF0
+addi    $s1, $zero, 0x0F
+addi    $s2, $zero, 0xCC
+addi    $s3, $zero, 0xFFFFABCE
+
+andi    $t0, $s0, 0xFF  # should be F0
+andi    $t1, $s0, 0xCF  # should be C0
+andi    $t2, $s1, 0xCC  # should be 0C
+andi    $t3, $s2, 0x34  # should be 04
+andi    $t4, $s3, 0xFFF3  # should be 0000ABC2

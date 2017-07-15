@@ -1,0 +1,11 @@
+addi    $s0, $zero, 0xF0
+addi    $s1, $zero, 0x0F
+addi    $s2, $zero, 0xCE
+addi    $s3, $zero, 0x00
+addi    $s4, $zero, 0xFF
+
+or      $t0, $s0, $s1  # should be FF
+or      $t1, $s0, $s2  # should be FE
+or      $t2, $s2, $s3  # should be CE
+or      $t3, $s2, $s4  # should be FF
+

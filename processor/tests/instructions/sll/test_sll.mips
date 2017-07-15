@@ -1,0 +1,8 @@
+addi    $s0, $zero, 1
+addi    $s1, $zero, 2
+addi    $s2, $zero, 3
+
+sll     $t0, $s0, 1     # should be 2
+sll     $t1, $s0, 2     # should be 4
+sll     $t2, $s1, 2     # should be 8
+sll     $t3, $s2, 3     # should be 24

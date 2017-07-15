@@ -1,0 +1,1 @@
+The bst.mips program is an implementation of a binary search tree written to be executed in the MARS simulator. I'm leaving it here in case I have time to adapt it to be able to run on the processor this project is about

@@ -1,0 +1,8 @@
+addi    $s0, $zero, 0x02
+addi    $s1, $zero, 0x10
+addi    $s2, $zero, 0x30
+
+srl     $t0, $s0, 1     # should be 1
+srl     $t1, $s0, 2     # should be 0
+srl     $t2, $s1, 2     # should be 4
+srl     $t3, $s2, 3     # should be 6
