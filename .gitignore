@@ -52,4 +52,4 @@ _info
 *.qtl
 _vmake
 transcript
-
+modelsim.ini
