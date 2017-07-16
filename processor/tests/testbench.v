@@ -16,11 +16,11 @@ module testbench;
     test_mux mux();
     test_control control();
 
-    // Processor tests
+    // // Processor tests
     // test_fefe fefe();
     // test_memset memset();
 
-    // ALU instruction tests
+    // // ALU instruction tests
     // test_addi addi();
     // test_add add();
     // test_sub sub();
@@ -33,14 +33,14 @@ module testbench;
     // test_srl srl();
     // test_slt slt();
 
-    // Jump tests
+    // // Jump tests
     // test_j j();
     // test_jr jr();
     // test_jalr jalr();
 
-    // Branch tests
+    // // Branch tests
     // test_bne bne();
-    test_bneal bneal();
+    // test_bneal bneal();
     // test_beq beq();
     // test_beqal beqal();
     // test_balmn balmn();
@@ -49,5 +49,7 @@ module testbench;
     // test_balrz balrz();
     // test_brn brn();
     // test_brz brz();
+    // test_bmn bmn();
+    // test_bmn bmz();
 
 endmodule

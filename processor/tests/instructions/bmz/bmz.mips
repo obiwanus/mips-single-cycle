@@ -1,0 +1,51 @@
+    j start_program  # so the address of loop is always fixed
+
+# ===============================================
+# The loop increments counter by 2 each cycle
+# a0 = initial counter
+# a1 = number of cycles
+loop1:
+    addi    $t0, $zero, 0       # internal counter
+loop1_int:
+    addi    $a0, $a0, 2         # increment counter
+    addi    $t0, $t0, 1         # count
+    bne     $t0, $a1, loop1_int
+    j end_loop1
+
+# address should be 24
+loop2:
+    addi    $t0, $zero, 0       # internal counter
+loop2_int:
+    addi    $a0, $a0, 2         # increment counter
+    addi    $t0, $t0, 1         # count
+    bne     $t0, $a1, loop2_int
+    j end_loop2
+
+# ===============================================
+start_program:
+
+    # Store the address of loop in register
+    # so we can then branch to it
+    addi    $s0, $zero, 4   # 4 is the address of loop1
+    addi    $s1, $zero, 8   # where we put 4 in memory
+    sw      $s0, 0($s1)
+
+    addi    $a0, $zero, 0   # counter
+    addi    $a1, $zero, 2   # number of cycles
+
+    addi    $t0, $zero, 0   # zero
+    bmz     0($s1)          # should branch
+end_loop1:
+
+    addi    $s0, $zero, 24  # 24 is the address of loop2
+    addi    $s1, $zero, 12   # where we put 24 in memory
+    sw      $s0, 0($s1)
+
+    addi    $a0, $zero, 0   # counter
+    addi    $a1, $zero, 2   # number of cycles
+
+    addi    $t0, $zero, 1   # not zero
+    bmz     0($s1)          # should not branch
+end_loop2:
+
+
