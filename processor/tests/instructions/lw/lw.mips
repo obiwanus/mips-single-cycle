@@ -1,0 +1,17 @@
+addi    $s0, $zero, 4
+addi    $s1, $zero, 8
+sw      $s0, 0($s1)
+
+addi    $s0, $zero, 0xFFAA
+addi    $s1, $s1, 8
+sw      $s0, 0($s1)
+
+addi    $s0, $zero, 0xBEEF
+addi    $s1, $s1, 8
+sw      $s0, 0($s1)
+
+
+addi    $s1, $zero, 8
+lw      $t0, 0($s1)
+lw      $t1, 8($s1)
+lw      $t2, 16($s1)
