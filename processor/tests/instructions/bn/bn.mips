@@ -10,7 +10,7 @@ loop1_int:
     addi    $a0, $a0, 2         # increment counter
     addi    $t0, $t0, 1         # count
     bne     $t0, $a1, loop1_int
-    jr      $ra
+    j end_loop1
 
 # address should be 24
 loop2:
@@ -19,7 +19,7 @@ loop2_int:
     addi    $a0, $a0, 2         # increment counter
     addi    $t0, $t0, 1         # count
     bne     $t0, $a1, loop2_int
-    jr      $ra
+    j end_loop2
 
 # ===============================================
 start_program:
@@ -28,14 +28,14 @@ start_program:
     addi    $a1, $zero, 2   # number of cycles
 
     addi    $t0, $zero, 1   # not zero
-    baln    loop1           # should branch
+    bn      loop1           # should branch
 end_loop1:
 
     addi    $a0, $zero, 0   # counter
     addi    $a1, $zero, 2   # number of cycles
 
     addi    $t0, $zero, 0   # zero
-    baln    loop2           # should not branch
+    bn      loop2           # should not branch
 end_loop2:
 
 

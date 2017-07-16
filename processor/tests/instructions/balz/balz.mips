@@ -10,7 +10,7 @@ loop1_int:
     addi    $a0, $a0, 2         # increment counter
     addi    $t0, $t0, 1         # count
     bne     $t0, $a1, loop1_int
-    j end_loop1
+    jr      $ra
 
 # address should be 24
 loop2:
@@ -19,7 +19,7 @@ loop2_int:
     addi    $a0, $a0, 2         # increment counter
     addi    $t0, $t0, 1         # count
     bne     $t0, $a1, loop2_int
-    j end_loop2
+    jr      $ra
 
 # ===============================================
 start_program:

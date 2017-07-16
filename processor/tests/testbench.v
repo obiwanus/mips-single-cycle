@@ -55,7 +55,9 @@ module testbench;
     // test_brz brz();
     // test_bmn bmn();
     // test_bmn bmz();
-    // test_baln baln();
+    test_baln baln();
     test_balz balz();
+    test_bn bn();
+    test_bz bz();
 
 endmodule
