@@ -42,6 +42,8 @@ module testbench;
     // test_balmn balmn();
     // test_balmz balmz();
     // test_balrn balrn();
-    test_balrz balrz();
+    // test_balrz balrz();
+    // test_brn brn();
+    test_brz brz();
 
 endmodule
