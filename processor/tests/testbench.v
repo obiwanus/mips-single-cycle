@@ -40,7 +40,9 @@ module testbench;
 
     // Branch tests
     // test_bne bne();
+    test_bneal bneal();
     // test_beq beq();
+    // test_beqal beqal();
     // test_balmn balmn();
     // test_balmz balmz();
     // test_balrn balrn();
