@@ -4,12 +4,12 @@ instr   func    syntax          description
 
 add     0x20    rd, rs, rt
 and     0x24    rd, rs, rt
-balrn   0x17    rs, rd          if [z]=0, branch and link to rs, store return in rd (31 by default)
+balrn   0x17    rs, rd          if [z]=0, branch to rs, store return in rd (31 by default)
 balrz   0x16    rs, rd          if [z]=1, ---^---
 brn     0x15    rs              if [z]=0, branch to rs
 brz     0x14    rs              if [z]=1, branch to rs
-jalr    0x09    rs, rd          unconditional jump and link rd
-jr      0x08    rs              unconditional jump
+jalr    0x09    rs, rd          unconditional jump to rs and link rd
+jr      0x08    rs              unconditional jump to rs
 nor     0x27    rd, rs, rt
 or      0x25    rd, rs, rt
 slt     0x2a    rd, rs, rt      set rd to (rs < rt)

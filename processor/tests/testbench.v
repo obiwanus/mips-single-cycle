@@ -36,6 +36,7 @@ module testbench;
     // Jump tests
     // test_j j();
     // test_jr jr();
+    test_jalr jalr();
 
     // Branch tests
     // test_bne bne();
@@ -44,6 +45,6 @@ module testbench;
     // test_balrn balrn();
     // test_balrz balrz();
     // test_brn brn();
-    test_brz brz();
+    // test_brz brz();
 
 endmodule
