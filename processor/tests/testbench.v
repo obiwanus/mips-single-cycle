@@ -38,8 +38,8 @@ module testbench;
     // test_jr jr();
     // test_jm jm();
     // test_jpc jpc();
-    test_jalr jal();
-    test_jalr jalpc();
+    // test_jalr jal();
+    // test_jalr jalpc();
     // test_jalm jalm();
 
     // // Branch tests
@@ -55,5 +55,7 @@ module testbench;
     // test_brz brz();
     // test_bmn bmn();
     // test_bmn bmz();
+    // test_baln baln();
+    test_balz balz();
 
 endmodule
