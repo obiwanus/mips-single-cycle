@@ -36,8 +36,10 @@ module testbench;
     // // Jump tests
     // test_j j();
     // test_jr jr();
-    test_jm jm();
-    // test_jalr jalr();
+    // test_jm jm();
+    // test_jpc jpc();
+    test_jalr jal();
+    test_jalr jalpc();
     // test_jalm jalm();
 
     // // Branch tests
