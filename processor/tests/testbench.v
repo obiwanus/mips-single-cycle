@@ -37,6 +37,7 @@ module testbench;
     // test_j j();
     // test_jr jr();
     // test_jalr jalr();
+    test_jalm jalm();
 
     // // Branch tests
     // test_bne bne();
