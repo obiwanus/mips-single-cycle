@@ -39,6 +39,7 @@ module testbench;
 
     // Branch tests
     // test_bne bne();
-    test_balmn balmn();
+    // test_balmn balmn();
+    test_balmz balmz();
 
 endmodule
