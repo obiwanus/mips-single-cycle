@@ -36,10 +36,11 @@ module testbench;
     // Jump tests
     // test_j j();
     // test_jr jr();
-    test_jalr jalr();
+    // test_jalr jalr();
 
     // Branch tests
     // test_bne bne();
+    // test_beq beq();
     // test_balmn balmn();
     // test_balmz balmz();
     // test_balrn balrn();
