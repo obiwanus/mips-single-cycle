@@ -1,0 +1,159 @@
+# ====== A trivial binary search tree ======
+
+    addi    $fp, $zero, 0       # init pointer to free memory
+    addi    $sp, $zero, 1000    # stack pointer
+    j       main                # start program
+
+malloc:
+    # === Returns a pointer to the "allocated" memory
+    # a0 - how many bytes to allocate
+    # v0 - pointer to the allocated memory
+    add     $v0, $zero, $fp
+    add     $fp, $fp, $a0
+    jr      $ra
+    # ==================
+
+
+build:
+    # === Takes a list and returns a BST
+    # a0 - pointer to the beginning of list
+    # a1 - length of list
+    # v0 - returns a pointer to the root of the BST
+    addi    $k0, $zero, 24
+    sub     $sp, $sp, $k0
+    sw      $k0, 0($sp)
+    sw      $ra, 4($sp)
+    sw      $s0, 8($sp)
+    sw      $s1, 12($sp)
+    sw      $s2, 16($sp)
+    sw      $s3, 20($sp)
+    # ------------------
+
+    add     $s2, $zero, $a0     # remember start of list
+    add     $s3, $zero, $a1     # remember length of list
+
+    jal     new_node            # add root node
+    add     $s0, $zero, $v0     # s0 is the pointer to root
+
+    addi    $s1, $zero, 1       # assume length of list >= 2
+build_loop:
+    add     $a0, $zero, $s0     # pass pointer to root
+    add     $a1, $s2, $s1       # a1 points to the next list item
+    jal     insert
+
+    addi    $s1, $s1, 1
+    bne     $s1, $s3, build_loop
+
+    add     $v0, $zero, $s0     # return pointer to root
+
+    # ------------------
+    lw      $s3, 20($sp)
+    lw      $s2, 16($sp)
+    lw      $s1, 12($sp)
+    lw      $s0, 8($sp)
+    lw      $ra, 4($sp)
+    lw      $k0, 0($sp)
+    add     $sp, $sp, $k0       # restore  stack frame
+
+    jr      $ra
+    # ==================
+
+
+insert:
+    # === Inserts an element to BST
+    # a0 - pointer to root (maybe root of subtree)
+    # a1 - node data
+    # returns nothing
+    addi    $k0, $zero, 20
+    sub     $sp, $sp, $k0
+    sw      $k0, 0($sp)
+    sw      $ra, 4($sp)
+    sw      $s0, 8($sp)
+    sw      $s1, 12($sp)
+    sw      $s2, 16($sp)
+    # ------------------
+
+    add     $s0, $a0    # s0 - address of root
+    add     $s1, $a1    # s1 - node data to insert
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # TODO
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+    # ------------------
+    lw      $s2, 16($sp)
+    lw      $s1, 12($sp)
+    lw      $s0, 8($sp)
+    lw      $ra, 4($sp)
+    lw      $k0, 0($sp)
+    add     $sp, $sp, $k0       # restore  stack frame
+
+    jr      $ra
+    # ==================
+
+
+
+new_node:
+    # === Allocates and initialises new node
+    # a0 - node data (int)
+    # v0 - returns a pointer to the node
+    addi    $k0, $zero, 12
+    sub     $sp, $sp, $k0
+    sw      $k0, 0($sp)
+    sw      $ra, 4($sp)
+    sw      $s0, 8($sp)
+    # ------------------
+
+    add     $s0, $zero, $a0     # remember node data
+    addi    $a0, $zero, 12      # 12 is the size of a node
+    jal     malloc
+    sw      $s0,   0($v0)       # node->data = data
+    sw      $zero, 4($v0)       # node->left = NULL
+    sw      $zero, 8($v0)       # node->right = NULL
+
+    # ------------------
+    lw      $s0, 8($sp)
+    lw      $ra, 4($sp)
+    lw      $k0, 0($sp)
+    add     $sp, $sp, $k0       # restore  stack frame
+
+    jr      $ra
+    # ==================
+
+
+main:
+    # create a list
+    addi    $a0, $zero, 40      # allocate 10 words
+    jal     malloc
+    addi    $t0, $zero, 2
+    sw      $t0, 0($v0)
+    addi    $t0, $zero, -10
+    sw      $t0, 4($v0)
+    addi    $t0, $zero, 9
+    sw      $t0, 8($v0)
+    addi    $t0, $zero, 3
+    sw      $t0, 12($v0)
+    addi    $t0, $zero, -7
+    sw      $t0, 16($v0)
+    addi    $t0, $zero, 0
+    sw      $t0, 20($v0)
+    addi    $t0, $zero, 12
+    sw      $t0, 24($v0)
+    addi    $t0, $zero, 999
+    sw      $t0, 28($v0)
+    addi    $t0, $zero, -300
+    sw      $t0, 32($v0)
+    addi    $t0, $zero, 18
+    sw      $t0, 36($v0)
+
+    # build a BST
+    add     $a0, $zero, $v0
+    addi    $a1, $zero, 10
+    jal     build
+
+    # verify tree ?
+
+    # output sorted list
+

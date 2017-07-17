@@ -6,7 +6,7 @@ module test_memset;
     processor CPU();
 
     initial begin
-        $readmemb("tests/processor/memset/memset_imem.dat", CPU.IFU.imemory.storage.bytes);
+        $readmemb("tests/programs/memset/memset_imem.dat", CPU.IFU.imemory.storage.bytes);
 
         repeat(9) @(posedge CPU.clk);
 
