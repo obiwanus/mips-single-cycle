@@ -7,6 +7,9 @@ module memory(data_out, addr_in, data_in, write, clk);
 
     reg [7:0] bytes [0:255*4];
 
+    reg [31:0] debug_words[0:255];  // used only for debugging
+    reg [7:0] debug_word_addr = 0;
+
     wire [9:0] addr;
     assign addr = addr_in[9:0];  // we use only 10 bits of address
 
@@ -18,6 +21,10 @@ module memory(data_out, addr_in, data_in, write, clk);
         bytes[addr+1] = data_in[15:8];
         bytes[addr+2] = data_in[23:16];
         bytes[addr+3] = data_in[31:24];
+
+        // debugging
+        debug_word_addr = addr / 4;
+        debug_words[debug_word_addr] = data_in;
     end
 endmodule
 

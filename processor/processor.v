@@ -36,6 +36,8 @@ module processor;
 
     reg st_Z = 0;
 
+    reg [31:0] cycle_counter;
+
     clock_generator clk_gen(clk);
     register_file registers(data_a, data_b, rs, rt, reg_addr_dst, reg_data_in, write, clk);
     memory dmemory(mem_data, alu_out, data_b, mem_write, clk);
@@ -73,10 +75,12 @@ module processor;
         $readmemb("init/imem.dat", IFU.imemory.storage.bytes);
         $readmemh("init/reg.dat", registers.registers);
         $readmemh("init/dmem.dat", dmemory.bytes);
+        cycle_counter = 0;
     end
 
     always @(negedge clk) begin
         st_Z = (alu_out == 0);
+        cycle_counter = cycle_counter + 1;
     end
 
 endmodule

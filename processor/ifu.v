@@ -51,6 +51,9 @@ module ifu(
 
     always @(negedge clk) begin
         pc = pc_in;
+        if (pc > 1000) begin
+            pc = 1000;  // so we don't wrap around
+        end
     end
 
 endmodule
