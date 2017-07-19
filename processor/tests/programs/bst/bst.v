@@ -8,7 +8,7 @@ module test_bst;
     initial begin
         $readmemb("tests/programs/bst/bst_imem.dat", CPU.IFU.imemory.storage.bytes);
 
-        repeat(500) @(posedge CPU.clk);
+        repeat(1000) @(posedge CPU.clk);
 
         // `assertEq(CPU.dmemory.bytes[0], 8'h2)
         // `assertEq(CPU.dmemory.bytes[1], 8'h0)
@@ -66,8 +66,8 @@ module test_bst;
 
 
         // Check min and max
-        `assertEq(CPU.registers.registers[`REG_S1], -32'd10)
-        `assertEq(CPU.registers.registers[`REG_S2], 32'd9)
+        `assertEq(CPU.registers.registers[`REG_S1], -32'd300)
+        `assertEq(CPU.registers.registers[`REG_S2], 32'd999)
 
         `printResults
     end
