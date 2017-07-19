@@ -208,6 +208,56 @@ max_end:
     # ==================
 
 
+sort2list:
+    # === Outputs BST tree as a sorted list
+    # a0 - pointer to the root BST node
+    # a1 - where to put the list to
+    # v0 - pointer to the next item to write
+    addi    $k0, $zero, 12
+    sub     $sp, $sp, $k0
+    sw      $k0, 0($sp)
+    sw      $ra, 4($sp)
+    sw      $s0, 8($sp)
+    # ------------------
+
+    add     $s0, $zero, $a0     # save parameters
+    add     $v0, $zero, $a1     # v0 always points to the next item to write,
+                                # even if we don't take the branch
+
+    lw      $t0, 4($s0)         # t0 = node->left
+    beq     $t0, $zero, sort2list_noleft
+
+    # output left subtree
+    add     $a0, $zero, $t0
+    add     $a1, $zero, $v0
+    jal sort2list               # sort2list(node->left, out)
+
+sort2list_noleft:
+
+    # output current node
+    lw      $t0, 0($s0)
+    sw      $t0, 0($v0)
+    addi    $v0, $v0, 4         # advance the pointer
+
+    lw      $t0, 8($s0)         # t0 = node->right
+    beq     $t0, $zero, sort2list_noright
+
+    # output right subtree
+    add     $a0, $zero, $t0
+    add     $a1, $zero, $v0
+    jal sort2list
+
+sort2list_noright:
+    # ------------------
+    lw      $s0, 8($sp)
+    lw      $ra, 4($sp)
+    lw      $k0, 0($sp)
+    add     $sp, $sp, $k0       # restore  stack frame
+
+    jr      $ra
+    # ==================
+
+
 main:
     # create a list
     addi    $a0, $zero, 40      # allocate 10 words
@@ -253,6 +303,8 @@ main:
     sw      $v0, 0($t0)
     add     $s2, $zero, $v0
 
-
     # output sorted list
+    add     $a0, $zero, $s0             # pass root node
+    addi    $a1, $zero, 0               # overwrite the original list
+    jal sort2list
 
