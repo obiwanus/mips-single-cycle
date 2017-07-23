@@ -16,3 +16,8 @@ https://docs.google.com/a/ivanovs.info/spreadsheets/d/1ARzTCMWv4Y96ZnglDix2fxHa9
 ### Instruction Fetch Unit RTL diagram
 
 ![IFU](/IFU.png)
+
+
+### Processor RTL diagram
+
+![CPU](/CPU.png)
