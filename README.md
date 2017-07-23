@@ -12,3 +12,7 @@ This is a simple implementation of a single cycle MIPS-like processor in Verilog
 
 ### Control signals table
 https://docs.google.com/a/ivanovs.info/spreadsheets/d/1ARzTCMWv4Y96ZnglDix2fxHa96c0Vds3O4Jouae4WkE/edit?usp=sharing
+
+### Instruction Fetch Unit RTL diagram
+
+![IFU](/IFU.png)
