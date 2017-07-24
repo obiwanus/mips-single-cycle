@@ -21,3 +21,6 @@ https://docs.google.com/a/ivanovs.info/spreadsheets/d/1ARzTCMWv4Y96ZnglDix2fxHa9
 ### Processor RTL diagram
 
 ![CPU](/CPU.png)
+
+### My corresponfding blog post
+http://ivanovs.info/hardware/2017/07/21/mips-cpu.html
