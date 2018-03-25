@@ -1,12 +1,12 @@
 # MIPS processor
-This is a simple implementation of a single cycle MIPS-like processor in Verilog, with a slightly different instruction set than the standard MIPS32.
+This is a simple implementation of a single cycle MIPS-like processor in Verilog, with a slightly different instruction set from the standard MIPS32.
 
 ### Project structure
 `assembler/asm.cpp`: a simple assembler
 
-`processor/*.v`: the Verilog implementation of the processor
+`processor/*.v`: a Verilog implementation of the processor
 
-`processor/tests`: the set of hardware tests, including one for each instruction and each module, which are combined in a single testbench
+`processor/tests`: a set of hardware tests, including one for each instruction and each module, which are combined in a single testbench
 
 ## Supported instructions
 ```
